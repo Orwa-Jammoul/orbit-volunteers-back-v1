@@ -1,0 +1,45 @@
+cd /path/to/your/project
+composer install
+orbit_volunteers
+
+api/
+├── config/
+│   ├── database.php
+│   ├── config.php
+│   └── cors.php
+├── models/
+│   ├── User.php
+│   ├── Experience.php
+│   ├── Education.php
+│   ├── Skill.php
+│   ├── Blog.php
+│   ├── Project.php
+│   ├── Comment.php
+│   ├── Message.php
+│   ├── Team.php
+│   ├── Block.php
+│   └── Media.php
+├── controllers/
+│   ├── UserController.php
+│   ├── AuthController.php
+│   ├── BlogController.php
+│   ├── ProjectController.php
+│   ├── CommentController.php
+│   ├── MessageController.php
+│   ├── TeamController.php
+│   ├── MediaController.php
+│   └── BlockController.php
+├── routes/
+│   ├── api.php
+│   └── web.php
+├── middleware/
+│   ├── AuthMiddleware.php
+│   └── CorsMiddleware.php
+├── helpers/
+│   ├── Response.php
+│   ├── Validator.php
+│   └── JWT.php
+├── uploads/
+├── .htaccess
+├── index.php
+└── .env

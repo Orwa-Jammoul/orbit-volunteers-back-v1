@@ -1,0 +1,13 @@
+RewriteEngine On
+RewriteBase /Orbit_Volunteers/
+
+# Handle Authorization Header
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# If the request is for a real file or directory, serve it directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Otherwise, route everything through index.php
+RewriteRule ^(.*)$ index.php [QSA,L]
