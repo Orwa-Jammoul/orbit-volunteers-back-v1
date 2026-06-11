@@ -1,5 +1,9 @@
 RewriteEngine On
-RewriteBase /Orbit_Volunteers/
+RewriteBase /
+
+# Remove index.php from URLs
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.*)/index\.php [NC]
+RewriteRule ^ %1 [R=301,L]
 
 # Handle Authorization Header
 RewriteCond %{HTTP:Authorization} .
@@ -9,5 +13,5 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Otherwise, route everything through index.php
+# Route everything else through index.php
 RewriteRule ^(.*)$ index.php [QSA,L]
