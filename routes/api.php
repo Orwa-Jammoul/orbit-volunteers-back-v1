@@ -66,6 +66,10 @@ $router->add('POST', '/blogs', [BlogController::class, 'create']);
 $router->add('PUT', '/blogs/{id}', [BlogController::class, 'update']);
 $router->add('DELETE', '/blogs/{id}', [BlogController::class, 'delete']);
 $router->add('GET', '/blog-categories', [BlogController::class, 'categories']);
+$router->add('PUT', '/blogs/{id}/status', [BlogController::class, 'updateStatus']);
+$router->add('POST', '/categories', [BlogController::class, 'createCategory']);
+$router->add('PUT', '/categories/{id}', [BlogController::class, 'updateCategory']);
+$router->add('DELETE', '/categories/{id}', [BlogController::class, 'deleteCategory']);
 
 // Project Routes
 $router->add('GET', '/projects', [ProjectController::class, 'index']);
