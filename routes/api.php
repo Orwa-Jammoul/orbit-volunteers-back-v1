@@ -1,22 +1,25 @@
 <?php
-class Router {
+class Router
+{
     private $routes = [];
-    
-    public function add($method, $path, $handler) {
+
+    public function add($method, $path, $handler)
+    {
         $this->routes[] = [
             'method' => $method,
             'path' => $path,
             'handler' => $handler
         ];
     }
-    
-    public function dispatch($method, $uri) {
+
+    public function dispatch($method, $uri)
+    {
         foreach ($this->routes as $route) {
             if ($route['method'] === $method && $route['path'] === $uri) {
                 $this->executeHandler($route['handler']);
                 return;
             }
-            
+
             // Handle routes with parameters
             $pattern = preg_replace('/\{[a-z]+\}/', '([^/]+)', $route['path']);
             if ($route['method'] === $method && preg_match("#^$pattern$#", $uri, $matches)) {
@@ -25,11 +28,12 @@ class Router {
                 return;
             }
         }
-        
+
         Response::notFound("Endpoint not found");
     }
-    
-    private function executeHandler($handler, $params = []) {
+
+    private function executeHandler($handler, $params = [])
+    {
         if (is_array($handler)) {
             $controller = new $handler[0]();
             $method = $handler[1];
@@ -53,7 +57,7 @@ $router->add('GET', '/users', [UserController::class, 'index']);
 $router->add('GET', '/users/{id}', [UserController::class, 'show']);
 $router->add('PUT', '/users/{id}', [UserController::class, 'update']);
 $router->add('DELETE', '/users/{id}', [UserController::class, 'delete']);
-$router->add('PATCH', '/users/{id}/status', [UserController::class, 'updateStatus']);
+$router->add('PUT', '/users/{id}/status', [UserController::class, 'updateStatus']);
 
 // Blog Routes
 $router->add('GET', '/blogs', [BlogController::class, 'index']);
@@ -105,4 +109,3 @@ $router->add('POST', '/upload', [MediaController::class, 'upload']);
 $router->add('GET', '/albums', [MediaController::class, 'getAlbums']);
 $router->add('POST', '/albums', [MediaController::class, 'createAlbum']);
 $router->add('POST', '/albums/{id}/images', [MediaController::class, 'addImage']);
-?>
