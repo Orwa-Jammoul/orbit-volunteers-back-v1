@@ -90,6 +90,7 @@ $router->add('POST', '/messages', [MessageController::class, 'create']);
 $router->add('GET', '/messages', [MessageController::class, 'index']);
 $router->add('GET', '/messages/{id}', [MessageController::class, 'show']);
 $router->add('PUT', '/messages/{id}/status', [MessageController::class, 'updateStatus']);
+$router->add('DELETE', '/messages/{id}', [MessageController::class, 'delete']);
 
 // Team Routes
 $router->add('GET', '/teams', [TeamController::class, 'index']);
