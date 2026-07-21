@@ -87,7 +87,7 @@ class CommentController
             Response::error("Status is required", 422);
         }
 
-        if (!in_array($data['status'], ['pending', 'approved'])) {
+        if (!in_array($data['status'], ['hidden', 'pending', 'approved'])) {
             Response::error("Invalid status", 422);
         }
 
