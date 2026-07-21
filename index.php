@@ -99,7 +99,7 @@ try {
         ]);
         exit;
     }
-    
+
     // Split the path into segments
     // $path = str_replace($base_path, '', $request_uri);
     // print_r($path) ;
@@ -114,13 +114,13 @@ try {
     // return;
     $id = $segments[1] ?? null;
     $sub_id = $segments[2] ?? null;
-    
+
     // Load controllers as needed
     switch ($endpoint) {
         case 'health':
             Response::success(['status' => 'healthy', 'timestamp' => date('Y-m-d H:i:s')]);
             break;
-            
+
         case 'docs':
             header('Content-Type: text/html');
             if (file_exists(__DIR__ . '/docs.php')) {
@@ -131,12 +131,12 @@ try {
                 echo "<p>Available endpoints are listed at the root URL.</p>";
             }
             break;
-            
+
         // ==================== AUTHENTICATION ====================
         case 'auth':
             require_once __DIR__ . '/controllers/AuthController.php';
             $auth = new AuthController();
-            
+
             if ($id === 'register' && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 $auth->register();
             } elseif ($id === 'login' && $_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -147,12 +147,12 @@ try {
                 Response::notFound("Auth endpoint '{$id}' not found");
             }
             break;
-            
+
         // ==================== USERS ====================
         case 'users':
             require_once __DIR__ . '/controllers/UserController.php';
             $userController = new UserController();
-            
+
             if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($id) {
                     $userController->show($id);
@@ -167,12 +167,12 @@ try {
                 Response::error("Method not allowed", 405);
             }
             break;
-            
+
         // ==================== PROJECTS ====================
         case 'projects':
             require_once __DIR__ . '/controllers/ProjectController.php';
             $projectController = new ProjectController();
-            
+
             // Handle special sub-endpoints
             if ($id === 'categories' && $_SERVER['REQUEST_METHOD'] === 'GET') {
                 $projectController->categories();
@@ -200,12 +200,12 @@ try {
                 }
             }
             break;
-        
+
         // ==================== PROJECTS categories ====================
         case 'project-categories':
             require_once __DIR__ . '/controllers/ProjectController.php';
             $projectController = new ProjectController();
-            
+
             if ($id && is_numeric($id)) {
                 // GET /project-categories/{id}
                 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -239,7 +239,7 @@ try {
         case 'blogs':
             require_once __DIR__ . '/controllers/BlogController.php';
             $blogController = new BlogController();
-            
+
             // Handle sub-endpoints
             if ($id === 'images' && $sub_id && $_SERVER['REQUEST_METHOD'] === 'GET') {
                 // GET /blogs/images/{id}
@@ -286,7 +286,7 @@ try {
         case 'blog-categories':
             require_once __DIR__ . '/controllers/BlogController.php';
             $blogController = new BlogController();
-            
+
             if ($id && is_numeric($id)) {
                 // GET /blog-categories/{id}
                 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -320,14 +320,17 @@ try {
         case 'comments':
             require_once __DIR__ . '/controllers/CommentController.php';
             $commentController = new CommentController();
-            
-            if ($id && $sub_id && $_SERVER['REQUEST_METHOD'] === 'GET') {
+
+            if ($_SERVER['REQUEST_METHOD'] === 'GET' && $id && $sub_id) {
                 // /comments/{type}/{id}
                 $commentController->index($id, $sub_id);
-            } elseif ($id === 'status' && $sub_id && $_SERVER['REQUEST_METHOD'] === 'PUT') {
+            } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT' && $id && is_numeric($id) && $sub_id === 'status') {
                 // /comments/{id}/status
                 $commentController->updateStatus($id);
-            } elseif ($id && is_numeric($id) && $_SERVER['REQUEST_METHOD'] === 'DELETE') {
+            } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT' && $id && is_numeric($id)) {
+                // /comments/{id}
+                $commentController->update($id);
+            } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $id && is_numeric($id)) {
                 // /comments/{id}
                 $commentController->delete($id);
             } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -337,12 +340,12 @@ try {
                 Response::notFound("Comment endpoint not found");
             }
             break;
-            
+
         // ==================== MESSAGES ====================
         case 'messages':
             require_once __DIR__ . '/controllers/MessageController.php';
             $messageController = new MessageController();
-            
+
             if ($id && is_numeric($id) && $_SERVER['REQUEST_METHOD'] === 'GET') {
                 $messageController->show($id);
             } elseif ($id === 'status' && $sub_id && $_SERVER['REQUEST_METHOD'] === 'PUT') {
@@ -355,12 +358,12 @@ try {
                 Response::error("Method not allowed", 405);
             }
             break;
-            
+
         // ==================== TEAMS ====================
         case 'teams':
             require_once __DIR__ . '/controllers/TeamController.php';
             $teamController = new TeamController();
-            
+
             if ($id && is_numeric($id)) {
                 if ($sub_id === 'members' && $_SERVER['REQUEST_METHOD'] === 'POST') {
                     // POST /teams/{id}/members
@@ -387,12 +390,12 @@ try {
                 }
             }
             break;
-            
+
         // ==================== BLOCKS ====================
         case 'blocks':
             require_once __DIR__ . '/controllers/BlockController.php';
             $blockController = new BlockController();
-            
+
             if ($id === 'category' && $sub_id && $_SERVER['REQUEST_METHOD'] === 'GET') {
                 // /blocks/category/{slug}
                 $blockController->getByCategory($sub_id);
@@ -416,13 +419,13 @@ try {
                 }
             }
             break;
-            
+
         // ==================== MEDIA ====================
         case 'media':
         case 'upload':
             require_once __DIR__ . '/controllers/MediaController.php';
             $mediaController = new MediaController();
-            
+
             if ($endpoint === 'upload' && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mediaController->upload();
             } elseif ($endpoint === 'albums') {
@@ -437,7 +440,7 @@ try {
                 Response::notFound("Media endpoint not found");
             }
             break;
-            
+
         default:
             print('not founddddddddd');
             Response::notFound("Endpoint '{$endpoint}' not found. Available endpoints: auth, users, projects, blogs, comments, messages, teams, blocks, media, health, docs");
@@ -447,4 +450,3 @@ try {
     print('errorrrrrrrr');
     Response::error($e->getMessage(), 500);
 }
-?>
