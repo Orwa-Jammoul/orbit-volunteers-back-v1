@@ -354,6 +354,8 @@ try {
                 $messageController->index();
             } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $messageController->create();
+            } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $id && is_numeric($id)) {
+                $messageController->delete($id);
             } else {
                 Response::error("Method not allowed", 405);
             }
