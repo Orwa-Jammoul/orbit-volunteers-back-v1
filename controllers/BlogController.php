@@ -109,6 +109,7 @@ class BlogController
                     $blog['images'][] = [
                         'id' => null,
                         'image_url' => $blog[$imageKey],
+                        'image_base64' => $this->mediaModel->getImageBase64FromUrl($blog[$imageKey]),
                         'alt' => $blog['title'],
                         'caption' => null,
                         'display_order' => $i
@@ -154,6 +155,7 @@ class BlogController
                 if (!empty($blog[$imageKey])) {
                     $images[] = [
                         'url' => $blog[$imageKey],
+                        'base64' => $this->mediaModel->getImageBase64FromUrl($blog[$imageKey]),
                         'position' => $i
                     ];
                 }
